@@ -416,3 +416,59 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+
+###############
+# JetBrains IDEs (Rider, IntelliJ, ReSharper)
+###############
+
+# Default JetBrains workspace folder
+.idea/
+
+# Rider solution-specific settings
+*.sln.iml
+
+# User-specific plugin configs
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf/
+
+# Local history
+.idea/**/localHistory/
+
+# JetBrains caches
+.idea/**/caches/
+.idea/**/compiler.xml
+.idea/**/gradle.xml
+.idea/**/libraries/
+
+# Data source UI state
+.idea/**/dataSources/
+.idea/**/dataSources.local/
+
+# Sensitive or machine-specific files
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+
+# File-based project format
+*.iws
+
+# Rider system & build folders
+.idea/.idea.Rider/
+.idea/.idea.Microsoft/
+.idea/system/
+.idea/workspace/
+
+# Crash logs
+hs_err_pid*
+replay_pid*
+
+# JetBrains global storage (rare but safe to ignore)
+.jetbrains/
+
+###############
+# End JetBrains
+###############

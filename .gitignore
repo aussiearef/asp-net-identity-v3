@@ -468,7 +468,7 @@ replay_pid*
 
 # JetBrains global storage (rare but safe to ignore)
 .jetbrains/
-
+.DS_Store
 ###############
 # End JetBrains
 ###############

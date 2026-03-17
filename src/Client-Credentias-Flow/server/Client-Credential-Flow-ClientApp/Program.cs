@@ -13,7 +13,7 @@ var configuration = new ConfigurationBuilder()
 
 
 var authConfig = configuration.GetSection("Auth");
-var issuer = $"{authConfig["Issuer"]}auth/token";
+var issuer = $"{authConfig["Issuer"]}/oauth/token";
 
 var payload = new
 {

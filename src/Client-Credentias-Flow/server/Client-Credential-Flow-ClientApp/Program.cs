@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 
 var configuration = new ConfigurationBuilder()
     .SetBasePath(AppContext.BaseDirectory)
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile("appsettings.json", false, true)
     .Build();
 
 
@@ -17,12 +17,11 @@ var issuer = $"{authConfig["Issuer"]}/oauth/token";
 
 var payload = new
 {
-    client_id     = authConfig["ClientId"],
+    client_id = authConfig["ClientId"],
     client_secret = authConfig["ClientSecret"],
-    audience      = authConfig["Audience"],
-    grant_type    = "client_credentials"
+    audience = authConfig["Audience"],
+    grant_type = "client_credentials"
 };
-
 
 
 var http = new HttpClient
@@ -46,11 +45,20 @@ var token = JsonSerializer.Deserialize<Auth0TokenResponse>(body, new JsonSeriali
     PropertyNameCaseInsensitive = true
 });
 
+Console.Clear();
+Console.WriteLine($"Access Token: {token?.AccessToken}");
 
-Console.WriteLine("Access Token:");
-Console.WriteLine(token?.AccessToken);
-Console.WriteLine();
-Console.WriteLine($"Type: {token?.TokenType} | Expires In: {token?.ExpiresIn}s");
 
+// NOW CALL THE SERVER API
+
+var apiConfig = configuration.GetSection("ServerAPI");
+var apiUrl =  apiConfig["URL"];
+
+http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token?.AccessToken);
+var apiResponse = await http.GetAsync(apiUrl);
+var apiResponsePayload = await apiResponse.Content.ReadAsStringAsync();
+
+
+Console.WriteLine(apiResponsePayload);
 Console.WriteLine("Press any keys...");
 Console.ReadKey();

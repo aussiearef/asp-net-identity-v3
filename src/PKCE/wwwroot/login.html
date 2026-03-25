@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Login</title>
+</head>
+<body>
+
+<h2>Login with Auth0 </h2>
+
+<button id="loginBtn">Login</button>
+
+<script>
+    // -------------------------------------------------------
+    // CONFIG (replace with your values)
+    // -------------------------------------------------------
+    const auth0Domain = "dev-of6fy7icbrna3p24.us.auth0.com";       
+    const clientId    = "tO0i4wo6f4L8bWfEpBmXUfte7eCV7FVD";
+    const audience    = "https://dev-of6fy7icbrna3p24.us.auth0.com/api/v2/";  
+    const redirectUri = window.location.origin + "/index.html";
+
+
+    // -------------------------------------------------------
+    // PKCE HELPERS
+    // -------------------------------------------------------
+    function base64UrlEncode(buffer) {
+        return btoa(String.fromCharCode(...new Uint8Array(buffer)))
+            .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+/g, '');
+    }
+
+    async function generateCodeVerifier() {
+        const array = new Uint8Array(32);
+        crypto.getRandomValues(array);
+        return base64UrlEncode(array);
+    }
+
+    async function generateCodeChallenge(verifier) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(verifier);
+        const digest = await crypto.subtle.digest("SHA-256", data);
+        return base64UrlEncode(digest);
+    }
+
+
+    // -------------------------------------------------------
+    // LOGIN + REDIRECT TO AUTH0
+    // -------------------------------------------------------
+    document.getElementById("loginBtn").onclick = async function () {
+        // Generate PKCE items
+        const verifier = await generateCodeVerifier();
+        const challenge = await generateCodeChallenge(verifier);
+
+        // Save verifier locally for index.html to finish the flow
+        localStorage.setItem("pkce_verifier", verifier);
+
+        // Build Auth0 Authorise URL
+        const authUrl =
+            `https://${auth0Domain}/authorize` +
+            `?response_type=code` +
+            `&client_id=${clientId}` +
+            `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+            `&scope=openid profile email` +
+            `&audience=${encodeURIComponent(audience)}` +
+            `&code_challenge=${challenge}` +
+            `&code_challenge_method=S256`;
+
+        // Redirect to Auth0
+        window.location = authUrl;
+    };
+</script>
+
+</body>
+</html>

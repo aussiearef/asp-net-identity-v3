@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Weather Forecast</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<h2>Weather Forecast</h2>
+
+<button id="loadBtn">Load Weather</button>
+
+<table id="weatherTable" class="table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th>Temp (C)</th>
+        <th>Summary</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+    // -------------------------------------------------------
+    // CONFIG (replace with your values)
+    // -------------------------------------------------------
+    const auth0Domain   = "dev-of6fy7icbrna3p24.us.auth0.com";     // e.g. mytenant.au.auth0.com
+    const clientId      = "tO0i4wo6f4L8bWfEpBmXUfte7eCV7FVD";
+    const redirectUri   = window.location.origin + "/index.html";
+
+
+    // -------------------------------------------------------
+    // 1. HANDLE REDIRECT FROM AUTH0 AND EXCHANGE CODE FOR TOKEN
+    // -------------------------------------------------------
+    async function handleAuthRedirect() {
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get("code");
+        const access_token = params.get("access_token");
+
+        if (!access_token) {
+            if (!code) {
+                console.log("No code found. User must log in first.");
+                location.href = "login.html";
+                return;
+            }
+
+            const verifier = localStorage.getItem("pkce_verifier");
+            if (!verifier) {
+                alert("Missing PKCE verifier. Please log in again.");
+                return;
+            }
+
+            // Exchange code for tokens
+            const tokenRes = await fetch(`https://${auth0Domain}/oauth/token`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    grant_type: "authorization_code",
+                    client_id: clientId,
+                    code_verifier: verifier,
+                    code: code,
+                    redirect_uri: redirectUri
+                })
+            });
+
+            const tokenData = await tokenRes.json();
+
+            if (!tokenData.access_token) {
+                alert("Token exchange failed.");
+                return;
+            }
+
+            localStorage.setItem("access_token", tokenData.access_token);
+
+            // Remove ?code= from URL
+            window.history.replaceState({}, "", redirectUri);
+
+            //document.getElementById("loadBtn").disabled = false;
+        }
+
+        handleAuthRedirect();
+
+    }
+    // -------------------------------------------------------
+    // 2. CALL WEATHER API
+    // -------------------------------------------------------
+    document.getElementById("loadBtn").onclick = async function () {
+        const token = localStorage.getItem("access_token");
+
+        const res = await fetch("/weatherforecast", {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+            alert("Failed to load weather. Check token or API.");
+            return;
+        }
+
+        const data = await res.json();
+
+        const tbody = document.querySelector("#weatherTable tbody");
+        tbody.innerHTML = "";
+
+        data.forEach(item => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+            <td>${item.date}</td>
+            <td>${item.temperatureC}</td>
+            <td>${item.summary}</td>
+        `;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById("weatherTable").style.display = "table";
+    };
+</script>
+
+</body>
+</html>

@@ -1,5 +1,6 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer; // Use 'Microsoft.AspNetCore.Authentication.JwtBearer' Nuget package.
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+// Use 'Microsoft.AspNetCore.Authentication.JwtBearer' Nuget package.
 
 
 namespace Client_Credentias_Flow;
@@ -29,10 +30,10 @@ public class Program
         builder.Services.AddAuthorization();
 
         var app = builder.Build();
-        
+
         app.UseDefaultFiles();
         app.UseStaticFiles();
-        
+
         // 2. Enable Authentication Middleware
         // Order is critical: Authentication MUST come before Authorization
         app.UseAuthentication();

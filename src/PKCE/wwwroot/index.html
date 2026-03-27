@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <title>Weather Forecast</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -11,7 +11,7 @@
 
 <button id="loadBtn">Load Weather</button>
 
-<table id="weatherTable" class="table table-striped table-bordered">
+<table class="table table-striped table-bordered" id="weatherTable">
     <thead>
     <tr>
         <th>Date</th>
@@ -26,75 +26,73 @@
     // -------------------------------------------------------
     // CONFIG (replace with your values)
     // -------------------------------------------------------
-    const auth0Domain   = "dev-of6fy7icbrna3p24.us.auth0.com";     // e.g. mytenant.au.auth0.com
-    const clientId      = "tO0i4wo6f4L8bWfEpBmXUfte7eCV7FVD";
-    const redirectUri   = window.location.origin + "/index.html";
+    const auth0Domain = "dev-of6fy7icbrna3p24.us.auth0.com";
+    const clientId = "tO0i4wo6f4L8bWfEpBmXUfte7eCV7FVD";
+    const redirectUri = window.location.origin + "/index.html";
 
 
     // -------------------------------------------------------
-    // 1. HANDLE REDIRECT FROM AUTH0 AND EXCHANGE CODE FOR TOKEN
+    // 1. EXCHANGE CODE FOR TOKEN
     // -------------------------------------------------------
-    async function handleAuthRedirect() {
-        const params = new URLSearchParams(window.location.search);
-        const code = params.get("code");
-        const access_token = params.get("access_token");
+    async function exchangeCode(code) {
 
-        if (!access_token) {
-            if (!code) {
-                console.log("No code found. User must log in first.");
-                location.href = "login.html";
-                return;
-            }
-
-            const verifier = localStorage.getItem("pkce_verifier");
-            if (!verifier) {
-                alert("Missing PKCE verifier. Please log in again.");
-                return;
-            }
-
-            // Exchange code for tokens
-            const tokenRes = await fetch(`https://${auth0Domain}/oauth/token`, {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    grant_type: "authorization_code",
-                    client_id: clientId,
-                    code_verifier: verifier,
-                    code: code,
-                    redirect_uri: redirectUri
-                })
-            });
-
-            const tokenData = await tokenRes.json();
-
-            if (!tokenData.access_token) {
-                alert("Token exchange failed.");
-                return;
-            }
-
-            localStorage.setItem("access_token", tokenData.access_token);
-
-            // Remove ?code= from URL
-            window.history.replaceState({}, "", redirectUri);
-
-            //document.getElementById("loadBtn").disabled = false;
+        const verifier = localStorage.getItem("pkce_verifier");
+        if (!verifier) {
+            alert("Missing PKCE verifier. Please log in again.");
+            return;
         }
 
-        handleAuthRedirect();
+        // Exchange code for tokens
+        const tokenRes = await fetch(`https://${auth0Domain}/oauth/token`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                grant_type: "authorization_code",
+                client_id: clientId,
+                code_verifier: verifier,
+                code: code,
+                redirect_uri: redirectUri
+            })
+        });
 
+        const tokenData = await tokenRes.json();
+
+        return tokenData.access_token;
     }
+
     // -------------------------------------------------------
     // 2. CALL WEATHER API
     // -------------------------------------------------------
     document.getElementById("loadBtn").onclick = async function () {
-        const token = localStorage.getItem("access_token");
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get("code");
 
+        if (!code) {
+            console.log("No code found. User must log in first.");
+            location.href = "login.html";
+            return;
+        }
+
+        const token = await exchangeCode(code);
+        if (!token) {
+            console.log("Access token was not received.");
+            location.href = "login.html";
+            return;
+        }
+
+        debugger;
         const res = await fetch("/weatherforecast", {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: {Authorization: `Bearer ${token}`}
         });
 
         if (!res.ok) {
-            alert("Failed to load weather. Check token or API.");
+            if (res.status === 401) {
+                //window.location.href = "login.html";
+                alert("Failed to load weather. Check token or API.");
+            } else {
+                alert("Failed to load weather. Check token or API.");
+            }
+
             return;
         }
 

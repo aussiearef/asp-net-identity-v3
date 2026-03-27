@@ -86,8 +86,7 @@
 
         if (!res.ok) {
             if (res.status === 401) {
-                //window.location.href = "login.html";
-                alert("Failed to load weather. Check token or API.");
+                window.location.href = "login.html";
             } else {
                 alert("Failed to load weather. Check token or API.");
             }

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 // REMOVE 'Microsoft.AspNetCore.Authentication.JwtBearer' Nuget package.
 // ADD 'Microsoft.AspNetCore.Authentication.OpenIdConnect' Nuget package.
-// ADD 'Microsoft.AspNetCore.Authentication.Cookies' Nuget package.
+
 
 namespace Client_Credentias_Flow;
 

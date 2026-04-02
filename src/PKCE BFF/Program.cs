@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 // REMOVE 'Microsoft.AspNetCore.Authentication.JwtBearer' Nuget package.
 // ADD 'Microsoft.AspNetCore.Authentication.OpenIdConnect' Nuget package.
 
-
 namespace Client_Credentias_Flow;
 
 public class Program
@@ -41,15 +40,6 @@ public class Program
                 options.SaveTokens = true; // Saves tokens in the cookie
                 options.Scope.Add("offline_access"); // Request a refresh token
                 
-                // Critical
-                options.Events = new OpenIdConnectEvents
-                {
-                    OnRedirectToIdentityProvider = context =>
-                    {
-                        context.ProtocolMessage.SetParameter("audience", builder.Configuration["Auth:Audience"]);
-                        return Task.CompletedTask;
-                    }
-                };
             });
         builder.Services.AddAuthorization();
 

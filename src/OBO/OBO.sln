@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI and API A", "UI and API A\UI and API A.csproj", "{A2B475E4-D09C-4319-A9EE-B20A0792BE2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API B", "API B\API B.csproj", "{BEE4B1B5-2210-4679-ACE2-386ACC607F88}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A2B475E4-D09C-4319-A9EE-B20A0792BE2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2B475E4-D09C-4319-A9EE-B20A0792BE2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2B475E4-D09C-4319-A9EE-B20A0792BE2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2B475E4-D09C-4319-A9EE-B20A0792BE2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEE4B1B5-2210-4679-ACE2-386ACC607F88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEE4B1B5-2210-4679-ACE2-386ACC607F88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEE4B1B5-2210-4679-ACE2-386ACC607F88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEE4B1B5-2210-4679-ACE2-386ACC607F88}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+	EndGlobalSection
+EndGlobal

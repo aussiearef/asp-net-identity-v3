@@ -1,5 +1,3 @@
-using Amazon;
-using Amazon.Runtime;
 using AWSSecretsManager.Provider;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -16,8 +14,8 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Configuration.AddSecretsManager(); // Loads secrets from AWS Secrets Manager
-        
+        builder.Configuration.AddSecretsManager(); 
+
         // 1. Add Authentication Services
         builder.Services.AddAuthentication(options =>
             {
@@ -38,13 +36,12 @@ public class Program
                 options.ClientSecret = builder.Configuration["dev/learn-jwt:ClientSecret"];
                 options.ResponseType = "code";
                 options.ResponseMode = "query";
-    
+
                 // This enables PKCE automatically in ASP.NET Core
-                options.UsePkce = true; 
-    
+                options.UsePkce = true;
+
                 options.SaveTokens = true; // Saves tokens in the cookie
                 options.Scope.Add("offline_access"); // Request a refresh token
-                
             });
         builder.Services.AddAuthorization();
 
@@ -79,9 +76,9 @@ public class Program
             .WithName<IEndpointConventionBuilder>("GetWeatherForecast")
             .RequireAuthorization(); // This line ensures the JWT is present and valid
 
-        app.MapGet("/login", () => Results.Challenge(new AuthenticationProperties 
-            { 
-                RedirectUri = "/" 
+        app.MapGet("/login", () => Results.Challenge(new AuthenticationProperties
+            {
+                RedirectUri = "/"
             },
             [OpenIdConnectDefaults.AuthenticationScheme]));
         app.Run();

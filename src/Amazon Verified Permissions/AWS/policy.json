@@ -1,0 +1,8 @@
+permit (
+    principal,
+    action in [demo_pdp_pep::Action::"Read", demo_pdp_pep::Action::"Update"],
+    resource is demo_pdp_pep::user_profile
+)
+when {
+    resource.ownerId == principal
+};

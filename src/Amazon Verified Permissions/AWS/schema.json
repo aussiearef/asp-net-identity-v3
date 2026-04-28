@@ -1,0 +1,56 @@
+{
+    "demo_pdp_pep": {
+        "entityTypes": {
+            "User": {
+                "memberOfTypes": [],
+                "shape": {
+                    "type": "Record",
+                    "attributes": {}
+                }
+            },
+            "user_profile": {
+                "memberOfTypes": [],
+                "shape": {
+                    "type": "Record",
+                    "attributes": {
+                        "ownerId": {
+                            "required": true,
+                            "type": "Entity",
+                            "name": "User"
+                        }
+                    }
+                }
+            }
+        },
+        "actions": {
+            "Read": {
+                "appliesTo": {
+                    "context": {
+                        "type": "Record",
+                        "attributes": {}
+                    },
+                    "principalTypes": [
+                        "User"
+                    ],
+                    "resourceTypes": [
+                        "user_profile"
+                    ]
+                }
+            },
+            "Update": {
+                "appliesTo": {
+                    "context": {
+                        "type": "Record",
+                        "attributes": {}
+                    },
+                    "principalTypes": [
+                        "User"
+                    ],
+                    "resourceTypes": [
+                        "user_profile"
+                    ]
+                }
+            }
+        }
+    }
+}
